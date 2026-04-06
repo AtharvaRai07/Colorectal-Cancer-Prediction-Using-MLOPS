@@ -2,4 +2,6 @@ pandas
 numpy
 scikit-learn
 setuptools
--e .
+google-cloud-storage
+pyyaml
+# -e .
