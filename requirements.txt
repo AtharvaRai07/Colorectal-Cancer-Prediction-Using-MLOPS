@@ -4,4 +4,8 @@ scikit-learn
 setuptools
 google-cloud-storage
 pyyaml
+matplotlib
+seaborn
+Flask
+kfp
 # -e .
