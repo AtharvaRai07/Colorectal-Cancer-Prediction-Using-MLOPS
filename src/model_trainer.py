@@ -167,7 +167,7 @@ class ModelTrainer:
 
 
 if __name__ == "__main__":
-    run_context = mlflow.start_run() if MLFLOW_AVAILABLE else nullcontext()
+    run_context = mlflow.start_run()
     with run_context:
         model_trainer = ModelTrainer(input_file_path=PREPROCESSED_FILE_PATH, model_file_path=MODEL_FILE_PATH, scaler_file_path=SCALER_FILE_PATH, model_test_result=MODEL_TEST_RESULT)
         model_trainer.run()
