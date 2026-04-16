@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import joblib
 from sklearn.model_selection import train_test_split
-from sklearn.feature_selection import SelectKBest, chi2
+from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
 from utils.common_functions import read_yaml
@@ -56,23 +56,23 @@ class DataProcessing:
 
     def feature_selection(self):
         try:
-            logging.info("Selection features using chi square test...")
-            chi2_selector = SelectKBest(chi2, k="all")
+            logging.info("Selecting features using f-test...")
+            selector = SelectKBest(f_classif, k="all")
 
             X = self.df.drop('Survival_Prediction', axis=1)
 
-            chi2_selector.fit(X, self.df['Survival_Prediction'])
+            selector.fit(X, self.df['Survival_Prediction'])
 
-            chi2_scores = pd.DataFrame({
+            feature_scores = pd.DataFrame({
                     'Feature': X.columns,
-                    'Chi2_Scores': chi2_selector.scores_
-            }).sort_values(by='Chi2_Scores', ascending=False).reset_index(drop=True)
+                    'F_Scores': selector.scores_
+            }).sort_values(by='F_Scores', ascending=False).reset_index(drop=True)
 
-            self.selected_features = chi2_scores.head(self.k)['Feature'].tolist()
-            logging.info(f"Selected top {self.k} features")
+            self.selected_features = feature_scores.head(self.k)['Feature'].tolist()
+            logging.info(f"Selected top {self.k} features: {self.selected_features}")
 
             self.target_column = self.df['Survival_Prediction'].copy()
-            self.df = self.df[self.selected_features]
+            self.df = self.df[self.selected_features].copy()
 
         except Exception as e:
             logging.error(f"Error in feature selection: {e}")
@@ -81,12 +81,19 @@ class DataProcessing:
     def save_artifacts(self):
         try:
             logging.info("Saving preprocessed data...")
-            preprocessed_df = pd.DataFrame(self.df, columns=self.selected_features)
+            preprocessed_df = self.df.copy()
             preprocessed_df['Survival_Prediction'] = self.target_column
+
+            # Verify data integrity before saving
+            if len(preprocessed_df) == 0:
+                raise ValueError("No data to save after preprocessing")
+
             preprocessed_df.to_csv(self.output_file_path, index=False)
+            logging.info(f"Preprocessed data saved to {self.output_file_path}")
 
             logging.info("Saving label encoders...")
             joblib.dump(self.label_encoder, self.label_encoder_file_path)
+            logging.info(f"Label encoders saved to {self.label_encoder_file_path}")
 
         except Exception as e:
             logging.error(f"Error in saving artifacts: {e}")

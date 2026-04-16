@@ -8,4 +8,6 @@ matplotlib
 seaborn
 Flask
 kfp
+mlflow>=2.14.0
+pydantic>=2.5.0
 # -e .

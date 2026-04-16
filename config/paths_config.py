@@ -14,9 +14,11 @@ PREPROCESSED_FILE_PATH = os.path.join(PREPROCESSED_DIR, "preprocessed_data.csv")
 LABEL_ENCODER_DIR = os.path.join(PREPROCESSED_DIR, "label_encoder")
 LABEL_ENCODER_FILE_PATH = os.path.join(LABEL_ENCODER_DIR, "label_encoder.pkl")
 
-SCALER_DIR = os.path.join(PREPROCESSED_DIR, "scaler")
-X_TRAIN_SCALER_FILE_PATH = os.path.join(SCALER_DIR, "X_train_scaler.pkl")
-
 ############################# MODEL TRAINING PATHS ############################
 MODEL_DIR = "artifacts/model"
+
+SCALER_DIR = os.path.join(MODEL_DIR, "scaler")
+SCALER_FILE_PATH = os.path.join(SCALER_DIR, "X_train_scaler.pkl")
+
 MODEL_FILE_PATH = os.path.join(MODEL_DIR, "model.pkl")
+MODEL_TEST_RESULT = os.path.join(MODEL_DIR, "model_evaluation.txt")

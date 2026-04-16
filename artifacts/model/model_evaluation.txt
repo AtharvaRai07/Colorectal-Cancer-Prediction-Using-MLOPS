@@ -1,0 +1,6 @@
+Model Evaluation Results:
+Accuracy: 0.606
+Recall: 0.999802965371164
+Precision: 0.6060253194792786
+F1 Score: 0.7546335025003253
+ROC AUC Score: 0.4983199267420502

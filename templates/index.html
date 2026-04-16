@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Colorectal Survival Predictor</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Spectral:wght@400;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+	<div class="ambient-shape shape-a"></div>
+	<div class="ambient-shape shape-b"></div>
+
+	<main class="container">
+		<section class="layout">
+			<aside class="panel info-panel">
+				<span class="chip">Clinical Decision Support</span>
+				<h1>Colorectal Survival Predictor</h1>
+				<p class="subtitle">
+					Enter patient and treatment context to estimate survival prediction using your trained gradient boosting model.
+				</p>
+				<ul class="points">
+					<li>Model-based prognosis support for rapid exploratory analysis.</li>
+					<li>Consistent feature scaling and categorical encoding with your saved artifacts.</li>
+					<li>Instant prediction feedback in the same interface.</li>
+				</ul>
+			</aside>
+
+			<section class="panel form-panel">
+				<h2 class="form-title">Patient Feature Input</h2>
+				<p class="form-description">Use exact category labels from your training data for text fields to avoid encoding mismatch errors.</p>
+
+				<form action="/predict" method="POST">
+					<div class="grid">
+						<div class="field">
+							<label for="Healthcare_Cost">Healthcare Cost</label>
+							<input id="Healthcare_Cost" name="Healthcare_Cost" type="number" min="0" step="1" required placeholder="e.g. 30000">
+						</div>
+
+						<div class="field">
+							<label for="Tumor_Size">Tumor Size</label>
+							<input id="Tumor_Size" name="Tumor_Size" type="number" min="0" step="1" required placeholder="e.g. 4">
+						</div>
+
+						<div class="field">
+							<label for="Treatment_Type">Treatment Type</label>
+							<input id="Treatment_Type" name="Treatment_Type" type="text" required list="treatment-list" placeholder="Enter exact label">
+							<datalist id="treatment-list">
+								<option value="Chemotherapy"></option>
+								<option value="Combination"></option>
+								<option value="Radiotherapy"></option>
+								<option value="Surgery"></option>
+							</datalist>
+						</div>
+
+						<div class="field">
+							<label for="Diabetes">Diabetes</label>
+							<select id="Diabetes" name="Diabetes" required>
+								<option value="" disabled selected>Select</option>
+								<option value="Yes">Yes</option>
+								<option value="No">No</option>
+							</select>
+						</div>
+
+						<div class="field">
+							<label for="Age">Age</label>
+							<input id="Age" name="Age" type="number" min="0" max="120" step="1" required placeholder="e.g. 54">
+						</div>
+
+						<div class="field">
+							<label for="Survival_5_years">Survival 5 Years</label>
+							<select id="Survival_5_years" name="Survival_5_years" required>
+								<option value="" disabled selected>Select</option>
+								<option value="Yes">Yes</option>
+								<option value="No">No</option>
+							</select>
+						</div>
+
+						<div class="field">
+							<label for="Mortality_Rate_per_100k">Mortality Rate per 100k</label>
+							<input id="Mortality_Rate_per_100k" name="Mortality_Rate_per_100k" type="number" min="0" step="1" required placeholder="e.g. 140">
+						</div>
+
+						<div class="field">
+							<label for="Country">Country</label>
+							<input id="Country" name="Country" type="text" required list="country-list" placeholder="Enter exact label">
+							<datalist id="country-list">
+								<option value="Australia"></option>
+								<option value="Brazil"></option>
+								<option value="Canada"></option>
+								<option value="China"></option>
+								<option value="France"></option>
+								<option value="Germany"></option>
+								<option value="India"></option>
+								<option value="Italy"></option>
+								<option value="Japan"></option>
+								<option value="New Zealand"></option>
+								<option value="Nigeria"></option>
+								<option value="Pakistan"></option>
+								<option value="South Africa"></option>
+								<option value="South Korea"></option>
+								<option value="UK"></option>
+								<option value="USA"></option>
+							</datalist>
+						</div>
+
+						<div class="field">
+							<label for="Physical_Activity">Physical Activity</label>
+							<input id="Physical_Activity" name="Physical_Activity" type="text" required list="activity-list" placeholder="Enter exact label">
+							<datalist id="activity-list">
+								<option value="Low"></option>
+								<option value="Moderate"></option>
+								<option value="High"></option>
+							</datalist>
+						</div>
+
+						<div class="field">
+							<label for="Insurance_Status">Insurance Status</label>
+							<input id="Insurance_Status" name="Insurance_Status" type="text" required list="insurance-list" placeholder="Enter exact label">
+							<datalist id="insurance-list">
+								<option value="Insured"></option>
+								<option value="Uninsured"></option>
+							</datalist>
+						</div>
+					</div>
+
+					<div class="action">
+						<button type="submit">Predict Survival</button>
+
+						{% if prediction is defined %}
+							<div class="result success">Prediction: <strong>{{ prediction }}</strong></div>
+						{% endif %}
+
+						{% if error %}
+							<div class="result error">Error: {{ error }}</div>
+						{% endif %}
+					</div>
+				</form>
+
+				<p class="note">
+					This interface is for educational and research workflows and should not be used as a standalone clinical diagnosis tool.
+				</p>
+			</section>
+		</section>
+	</main>
+</body>
+</html>
+
