@@ -1,0 +1,74 @@
+# PIPELINE DEFINITION
+# Name: mlops-pipeline
+# Description: A pipeline that performs data ingestion, preprocessing, and model training.
+components:
+  comp-data-ingestion-op:
+    executorLabel: exec-data-ingestion-op
+  comp-data-preprocessing-op:
+    executorLabel: exec-data-preprocessing-op
+  comp-model-training-op:
+    executorLabel: exec-model-training-op
+deploymentSpec:
+  executors:
+    exec-data-ingestion-op:
+      container:
+        command:
+        - python
+        - src/data_ingestion.py
+        image: atharvarai07/my-mlops-app:latest
+    exec-data-preprocessing-op:
+      container:
+        command:
+        - python
+        - src/data_processing.py
+        image: atharvarai07/my-mlops-app:latest
+    exec-model-training-op:
+      container:
+        command:
+        - python
+        - src/model_trainer.py
+        image: atharvarai07/my-mlops-app:latest
+pipelineInfo:
+  description: A pipeline that performs data ingestion, preprocessing, and model training.
+  name: mlops-pipeline
+root:
+  dag:
+    tasks:
+      data-ingestion-op:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-data-ingestion-op
+        taskInfo:
+          name: data-ingestion-op
+      data-preprocessing-op:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-data-preprocessing-op
+        dependentTasks:
+        - data-ingestion-op
+        taskInfo:
+          name: data-preprocessing-op
+      model-training-op:
+        cachingOptions:
+          enableCache: true
+        componentRef:
+          name: comp-model-training-op
+        dependentTasks:
+        - data-preprocessing-op
+        taskInfo:
+          name: model-training-op
+schemaVersion: 2.1.0
+sdkVersion: kfp-2.16.0
+---
+platforms:
+  kubernetes:
+    deploymentSpec:
+      executors:
+        exec-data-ingestion-op:
+          imagePullPolicy: Never
+        exec-data-preprocessing-op:
+          imagePullPolicy: Never
+        exec-model-training-op:
+          imagePullPolicy: Never
